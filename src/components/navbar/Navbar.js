@@ -4,7 +4,7 @@ import Link from "next/link";
 import Button from '@/components/Button';
 import { signOut, useSession } from "next-auth/react"
 import pp from '/public/assets/pp.jpg'
-import logo from '/public/assets/logo.jpeg'
+import logo from '/public/assets/dezine (1).png'
 
 export default function Navbar() {
   const { data: session } = useSession()
@@ -16,8 +16,8 @@ export default function Navbar() {
         </Link>
         <nav>
             <ul className="flex justify-between">
-                <li className="font-medium text-base text-[#004f4f] inline-block py-0 px-5 transition-all ease-in-out cursor-pointer hover:font-bold"><Link href="/">Home</Link></li>
-                <li className="font-medium text-base text-[#004f4f] inline-block py-0 px-5 transition-all ease-in-out cursor-pointer hover:font-bold">Categories</li>
+            <li className="font-medium text-base text-[#004f4f] inline-block py-0 px-5 transition-all ease-in-out cursor-pointer hover:font-bold"><Link href="/">Home</Link></li>
+                <li className="font-medium text-base text-[#004f4f] inline-block py-0 px-5 transition-all ease-in-out cursor-pointer hover:font-bold"><Link href="/category-page">Categories</Link></li>
                 <li className="font-medium text-base text-[#004f4f] inline-block py-0 px-5 transition-all ease-in-out cursor-pointer hover:font-bold"><Link href="/pricing">Pricing</Link></li>
                 <li className="font-medium text-base text-[#004f4f] inline-block py-0 px-5 transition-all ease-in-out cursor-pointer hover:font-bold">Study Case</li>
             </ul>
