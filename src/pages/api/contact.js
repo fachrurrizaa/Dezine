@@ -16,7 +16,7 @@ export default async function handler(req, res) {
       );
 
       // Append the new row to the Google Sheet
-      const response = sheets.spreadsheets.values.append({
+      const response = await sheets.spreadsheets.values.append({
         auth,
         spreadsheetId: process.env.GOOGLE_SHEET_ID,
         range: 'ContactUs!A:C', // Use entire columns A to C
