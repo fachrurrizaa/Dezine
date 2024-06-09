@@ -5,6 +5,7 @@ import CategoryItem from './CategoryItem';
 const CategoryList = () => {
     const { categories } = useContext(Context);
     const { posts } = useContext(Context)
+    
 
 
 
@@ -14,6 +15,7 @@ const CategoryList = () => {
                 // Ambil postingan pertama dari kategori tertentu sebagai thumbnail
                 const categoryPosts = posts.filter((post) => post.category === category._id);
                 const thumbnailUrl = categoryPosts.length > 0 ? categoryPosts[0].images[0] : ''; // Mengambil gambar pertama dari postingan pertama di kategori
+                const postCount = categoryPosts.length;
 
                 return (
                     <CategoryItem 
@@ -21,7 +23,7 @@ const CategoryList = () => {
                         id={category._id} 
                         thumbnails={thumbnailUrl} // Menggunakan URL gambar sebagai prop 'thumbnails'
                         name={category.name} 
-                        random={Math.floor(Math.random() * 1000)} 
+                        postCount={postCount}
                     />
                 );
             })}
@@ -30,3 +32,5 @@ const CategoryList = () => {
 };
 
 export default CategoryList;
+
+
