@@ -10,7 +10,7 @@ const CategoryList = () => {
 
 
     return (
-      <div className='flex justify-evenly'>
+      <div className='flex justify-around px-8'>
             {categories.slice(0, 4).map((category) => {
                 // Ambil postingan pertama dari kategori tertentu sebagai thumbnail
                 const categoryPosts = posts.filter((post) => post.category === category._id);

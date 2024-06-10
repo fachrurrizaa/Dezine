@@ -1,12 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
-import logo from '/public/assets/logo.jpeg'
+import logo from '/public/assets/dezine.svg'
 
 export default function Navbar() {
   return (
     <header className="flex justify-between items-center p-5 px-32">
         <Link href='/'>
-          <Image src={logo} width={200} height={0} alt={"logo"}/>
+          <Image src={logo} width={160} height={0} alt={"logo"}/>
         </Link>
         <nav>
             <ul className="flex justify-between">

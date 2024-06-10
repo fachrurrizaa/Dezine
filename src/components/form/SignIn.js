@@ -46,8 +46,8 @@ export default function SignIn() {
               <Button type={"submit"} className={'w-full text-white bg-[#028d94] hover:bg-[#02b2bb] mt-8 font-semibold'} content={"Sign In"} click={()=>handleSubmit(data)}/>
               <Button click={()=>signIn('google', { callbackUrl: '/'})} className={'w-full text-[#004f4f] bg-[#EBEDF3] my-4 font-medium hover:bg-slate-300'} content={
                 <div className='flex items-center w-full'>
-                  <Image src={googleIcon} width={0} height={30} alt={"img"} className='mr-10'/>
-                  <p className='text-[#4484f5]'>Sign in with Google</p>
+                  <Image src={googleIcon} width={0} height={30} alt={"img"} className='ml-3 mr-11'/>
+                  <p className='text-[#4484f5] text-center'>Sign in with Google</p>
                 </div>
               }/>
               <Link href={'/signup'} className={`label-text font-semibold text-[#004f4f] text-base px-2 underline `}>

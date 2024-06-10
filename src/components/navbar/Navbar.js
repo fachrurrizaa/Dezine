@@ -4,7 +4,7 @@ import Link from "next/link";
 import Button from '@/components/Button';
 import { signOut, useSession } from "next-auth/react"
 import pp from '/public/assets/pp.jpg'
-import logo from '/public/assets/dezine (1).png'
+import logo from '/public/assets/dezine.svg'
 
 export default function Navbar() {
   const { data: session } = useSession()
@@ -12,7 +12,7 @@ export default function Navbar() {
   return (
     <header className="flex justify-between items-center p-5 px-32">
         <Link href='/'>
-            <Image src={logo} width={200} height={0} alt={"logo"}/>
+            <Image src={logo} width={160} height={0} alt={"logo"}/>
         </Link>
         <nav>
             <ul className="flex justify-between">

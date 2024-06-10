@@ -1,5 +1,6 @@
 import { Player } from '@lottiefiles/react-lottie-player';
 import Button from '../Button';
+import Link from 'next/link';
 
 export default function Hero() {
   return (
@@ -16,7 +17,9 @@ export default function Hero() {
         <div>
             <h1 className='text-5xl font-bold text-[#004f4f] leading-tight'>Design Better & <br/>Faster Than Before.</h1>
             <p className='py-6 text-[#6B7193]'>Accelerate your work with our millions<br/> of ready-to-use design projects.</p>
-            <Button className={'text-white bg-[#028d94] hover:bg-[#02b2bb]'}  content={"Browse Now"}/>
+            <Link href={'/category-page'}>
+              <Button className={'text-white bg-[#028d94] hover:bg-[#02b2bb]'}  content={"Browse Now"}/>
+            </Link>
         </div>
     </div>
   )
