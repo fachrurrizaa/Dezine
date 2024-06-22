@@ -16,9 +16,10 @@ export default function CardBasic({price}) {
         } else {
             try {
                 const response = await axios.post('/api/subscribe', { 
-                    userId: session.user._id,
+                    userId: session?.user?._id,
                     price
                 });
+                console.log(response)
                 if (response.data && response.data.redirect_url) {
                     window.location.href = response.data.redirect_url;
                 }
