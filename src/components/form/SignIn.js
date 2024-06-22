@@ -50,7 +50,7 @@ export default function SignIn() {
                   <p className='text-[#4484f5] text-center'>Sign in with Google</p>
                 </div>
               }/>
-              <Link href={'/signup'} className={`label-text font-semibold text-[#004f4f] text-base px-2 underline `}>
+              <Link href={'/register'} className={`label-text font-semibold text-[#004f4f] text-base px-2 underline `}>
                 Don't have an account?
               </Link>
             </div>

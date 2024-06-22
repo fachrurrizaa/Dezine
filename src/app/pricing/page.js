@@ -16,8 +16,8 @@ export default function page() {
                 <p className="font-normal text-xl text-[#6B7193] text-center">Working faster and better than before</p>
             </div>
             <div className="flex mb-24 mt-16 gap-20 mr-32">
-                <CardBasic/>
-                <CardGold/>
+                <CardBasic price={200000}/>
+                <CardGold price={300000}/>
             </div>
             <div className="flex gap-32">
                 <Feature src={ Costumize } content={"Costumizable"}/>

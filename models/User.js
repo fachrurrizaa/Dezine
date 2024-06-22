@@ -20,7 +20,11 @@ const UserSchema = new Schema({
         type: String,
         required: [true, 'Password is required'],
         select: false
-    }
+    },
+    subscriptions: {
+        type: Boolean,
+        default: false
+    }    
 });
 
 export const User = models?.User || model('User', UserSchema);
