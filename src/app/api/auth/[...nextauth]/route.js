@@ -22,16 +22,21 @@ export const authOptions = {
         password: { label: 'Password', type: 'password' }
       },
       async authorize(credentials) {
-        await mongooseConnect();
-        const user = await User.findOne({ email: credentials.email }).select('+password');
-        if (user) {
-          const isPasswordCorrect = await compare(credentials.password, user.password);
-          if (isPasswordCorrect) {
-            return user;
+        try {
+          await mongooseConnect();
+          const user = await User.findOne({ email: credentials.email }).select('+password');
+          if (user) {
+            const isPasswordCorrect = await compare(credentials.password, user.password);
+            if (isPasswordCorrect) {
+              return user;
+            }
+            throw new Error("Invalid credentials");
           }
           throw new Error("Invalid credentials");
+        } catch (error) {
+          console.error('Error in authorize function:', error);
+          throw new Error("Server error");
         }
-        throw new Error("Invalid credentials");
       }
     })
   ],
@@ -43,23 +48,35 @@ export const authOptions = {
   },
   callbacks: {
     async jwt({ token, account, profile }) {
-      if (account) {
+      if (account && profile) {
         token.accessToken = account.access_token;
 
-        await mongooseConnect();
-        const updateData = {
-          email: profile.email,
-          subscriptions: false, // Ensure default value is set
-        };
+        try {
+          await mongooseConnect();
+          const updateData = {
+            email: profile.email,
+            name: profile.name,
+            image: profile.picture,
+            subscriptions: false, // Ensure default value is set
+            googleProvider: true // Indicate that this user was created via Google
+          };
 
-        // Update the user if exists, otherwise create a new user
-        const user = await User.findOneAndUpdate(
-          { email: profile.email },
-          { $set: updateData },
-          { new: true, upsert: true, setDefaultsOnInsert: true }
-        );
+          console.log('Updating/Creating user with data:', updateData);
 
-        token.id = user._id;
+          // Update the user if exists, otherwise create a new user
+          const user = await User.findOneAndUpdate(
+            { email: profile.email },
+            { $set: updateData },
+            { new: true, upsert: true, setDefaultsOnInsert: true }
+          );
+
+          console.log('User after update/create:', user);
+
+          token.id = user._id;
+        } catch (error) {
+          console.error('Error in JWT callback:', error);
+          throw new Error("Server error");
+        }
       }
       return token;
     },
@@ -73,6 +90,6 @@ export const authOptions = {
   secret: process.env.NEXTAUTH_SECRET
 };
 
-const handler = NextAuth(authOptions);
+const handler = (req, res) => NextAuth(req, res, authOptions);
 
 export { handler as GET, handler as POST };
