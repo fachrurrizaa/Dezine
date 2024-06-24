@@ -47,57 +47,42 @@ export const authOptions = {
     signIn: '/login',
   },
   callbacks: {
-    async jwt({ token, account, profile, user }) {
+    async jwt({ token, account, profile }) {
       if (account && profile) {
         token.accessToken = account.access_token;
 
         try {
           await mongooseConnect();
-          // Cari pengguna di database berdasarkan email
-          const existingUser = await User.findOne({ email: profile.email });
-
           const updateData = {
             email: profile.email,
             name: profile.name,
             image: profile.picture,
+            subscriptions: false, // Ensure default value is set
             googleProvider: true // Indicate that this user was created via Google
           };
-
-          if (!existingUser) {
-            updateData.subscriptions = false; // Set default value for new user
-          } else {
-            // Gabungkan data dari pengguna yang ada
-            updateData.subscriptions = existingUser.subscriptions;
-            updateData.googleProvider = existingUser.googleProvider || true;
-          }
 
           console.log('Updating/Creating user with data:', updateData);
 
           // Update the user if exists, otherwise create a new user
-          const dbUser = await User.findOneAndUpdate(
+          const user = await User.findOneAndUpdate(
             { email: profile.email },
             { $set: updateData },
             { new: true, upsert: true, setDefaultsOnInsert: true }
           );
 
-          console.log('User after update/create:', dbUser);
+          console.log('User after update/create:', user);
 
-          token.id = dbUser._id;
-          token.subscriptions = dbUser.subscriptions;
+          token.id = user._id;
         } catch (error) {
           console.error('Error in JWT callback:', error);
           throw new Error("Server error");
         }
-      } else if (user) {
-        token.id = user._id;
-        token.subscriptions = user.subscriptions; // Add subscriptions to the token for manual login
       }
       return token;
     },
     async session({ session, token }) {
       session.accessToken = token.accessToken;
       session.user._id = token.id;
-      session.user.subscriptions = token.subscriptions;
       return session;
     }
   },
