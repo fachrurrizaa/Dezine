@@ -1,12 +1,10 @@
 'use client'
 import { Player } from '@lottiefiles/react-lottie-player';
-import { useContext, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Context } from '@/components/context/MyContext';
 
 export default function page() {
     const router = useRouter();
-    const {setIsSubscribe} = useContext(Context)
 
     useEffect(()=>{
         setIsSubscribe(true)

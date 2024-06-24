@@ -66,12 +66,10 @@ import Image from "next/image";
 import Link from "next/link";
 import Button from "@/components/Button";
 import { signOut, useSession } from "next-auth/react";
-import pp from "/public/assets/pp.jpg";
 import logo from "/public/assets/dezine.svg";
 
 export default function Navbar() {
   const { data: session } = useSession();
-  console.log(session);
 
   return (
     <header className="flex justify-between items-center p-5 px-32">

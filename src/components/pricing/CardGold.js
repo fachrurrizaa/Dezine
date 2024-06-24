@@ -4,22 +4,42 @@ import Check from "/public/assets/check-icon.svg";
 import Button from "../Button";
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
+import axios from "axios";
 
-export default function CardGold({price}) {
+export default function CardGold() {
     const router = useRouter();
     const {data : session} = useSession();
 
     async function handleClick() {
         if (!session) {
-            router.push(`/login`)
+            router.push('/login');
         } else {
             try {
                 const response = await axios.post('/api/subscribe', { 
-                    userId: session.user._id,
-                    price
+                    name: "Gold Plan",
+                    userId: session?.user?._id,
+                    price: 500000
                 });
-                if (response.data && response.data.redirect_url) {
-                    window.location.href = response.data.redirect_url;
+                console.log(response)
+                if (response.data && response.data.token) {
+                    window.snap.pay(response.data.token, {
+                        onSuccess: function(result) {
+                            console.log('Success:', result);
+                            // Handle success transaction here
+                        },
+                        onPending: function(result) {
+                            console.log('Pending:', result);
+                            // Handle pending transaction here
+                        },
+                        onError: function(result) {
+                            console.log('Error:', result);
+                            // Handle error in transaction here
+                        },
+                        onClose: function() {
+                            console.log('Customer closed the popup without finishing the payment');
+                            // Handle popup close event here
+                        }
+                    });
                 }
             } catch (error) {
                 console.error('Error creating transaction', error);
@@ -29,7 +49,7 @@ export default function CardGold({price}) {
 
     return (
       <div className='w-[397px] h-[662px] rounded-3xl border-solid border-[#E6EAF2] border px-8'>
-        <h1 className='text-[45px] font-bold mt-7 mb-7'>IDR 300,000<span className='text-[#6B7193] text-lg font-normal'>/month</span></h1>
+        <h1 className='text-[45px] font-bold mt-7 mb-7'>IDR 500,000<span className='text-[#6B7193] text-lg font-normal'>/month</span></h1>
         <h5 className="text-lg font-semibold">Gold Plan</h5>
         <p className="text-base font-normal text-[#6B7193] mb-7">Suitable for new team</p>
         <div className="flex gap-3 mb-4">

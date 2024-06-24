@@ -6,22 +6,40 @@ import { useRouter } from "next/navigation";
 import { useSession } from 'next-auth/react';
 import axios from 'axios';
 
-export default function CardBasic({price}) {
+export default function CardBasic() {
     const router = useRouter();
-    const {data: session} = useSession()
+    const { data: session } = useSession();
 
     async function handleClick() {
         if (!session) {
-            router.push(`/login`)
+            router.push('/login');
         } else {
             try {
                 const response = await axios.post('/api/subscribe', { 
+                    name: "Basic Plan",
                     userId: session?.user?._id,
-                    price
+                    price: 200000
                 });
                 console.log(response)
-                if (response.data && response.data.redirect_url) {
-                    window.location.href = response.data.redirect_url;
+                if (response.data && response.data.token) {
+                    window.snap.pay(response.data.token, {
+                        onSuccess: function(result) {
+                            console.log('Success:', result);
+                            // Handle success transaction here
+                        },
+                        onPending: function(result) {
+                            console.log('Pending:', result);
+                            // Handle pending transaction here
+                        },
+                        onError: function(result) {
+                            console.log('Error:', result);
+                            // Handle error in transaction here
+                        },
+                        onClose: function() {
+                            console.log('Customer closed the popup without finishing the payment');
+                            // Handle popup close event here
+                        }
+                    });
                 }
             } catch (error) {
                 console.error('Error creating transaction', error);
@@ -56,5 +74,5 @@ export default function CardBasic({price}) {
             </div>
             <Button className={"text-[#004f4f] bg-[#EBEDF3] w-full hover:bg-[#02b2bb] hover:text-white"} click={() => handleClick()} content={"Checkout Now"} />
         </div>
-    )
+    );
 }
