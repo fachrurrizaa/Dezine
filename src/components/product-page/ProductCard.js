@@ -7,19 +7,19 @@ import { useContext } from 'react';
 import { Context } from '@/components/context/MyContext';
 
 export default function ProductCard({ link }) {
-    const {data : session} = useSession()
-    const {isSubscribe} = useContext(Context)
-    const router = useRouter()
-    function clickHandler (){
-        if(!session){
-            router.push(`/login`)
-        }else if(session){
-            if(isSubscribe){
-                window.open(`${link}`)
-            }else{
-                router.push(`/pricing`)
-            }
+    const { data: session } = useSession();
+    const router = useRouter();
+  
+    function clickHandler(link) {
+      if (!session) {
+        router.push(`/login`);
+      } else if (session) {
+        if (session.user.subscriptions) {
+          window.open(`${link}`);
+        } else {
+          router.push(`/pricing`);
         }
+      }
     }
     return (
         <div className='flex flex-col w-96 h-[520px] bg-base-100 shadow-xl rounded-xl'>
