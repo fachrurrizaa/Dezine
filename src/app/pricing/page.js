@@ -1,3 +1,4 @@
+'use client'
 import Costumize from "../../../public/assets/costumize.svg";
 import Fortune from "../../../public/assets/fortune.svg";
 import Documentation from "../../../public/assets/documentation.svg";
