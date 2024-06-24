@@ -1,5 +1,3 @@
-
-
 'use client'
 import { useContext, useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';

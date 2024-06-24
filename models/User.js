@@ -10,21 +10,26 @@ const UserSchema = new Schema({
     email: {
         type: String,
         unique: true,
-        required: [true, 'email is required'],
+        required: [true, 'Email is required'],
         match: [
             /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
-            'invalid email address'
+            'Invalid email address'
         ]
     },
     password: {
         type: String,
-        required: [true, 'Password is required'],
-        select: false
+        select: false,
+        validate: {
+            validator: function(value) {
+                return this.googleProvider || value; // password is required if not logging in via Google
+            },
+            message: 'Password is required'
+        }
     },
     subscriptions: {
         type: Boolean,
         default: false
-    }    
+    }
 });
 
 export const User = models?.User || model('User', UserSchema);

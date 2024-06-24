@@ -1,5 +1,4 @@
 import React, { useContext } from "react";
-import Link from "next/link";
 import CategoryItem from "../../components/section/CategoryItem";
 import { Context } from "../../components/context/MyContext";
 

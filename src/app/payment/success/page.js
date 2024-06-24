@@ -7,7 +7,6 @@ export default function page() {
     const router = useRouter();
 
     useEffect(()=>{
-        setIsSubscribe(true)
         setTimeout(()=>{
             router.push('/')
         },5000)
