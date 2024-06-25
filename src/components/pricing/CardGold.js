@@ -15,12 +15,14 @@ export default function CardGold() {
             router.push('/login');
         } else {
             try {
+                const userId = await session?.user?._id;
+
                 const response = await axios.post('/api/subscribe', { 
                     name: "Gold Plan",
-                    userId: session?.user?._id,
+                    userId: userId,
                     price: 500000
                 });
-                console.log(response)
+
                 if (response.data && response.data.token) {
                     window.snap.pay(response.data.token, {
                         onSuccess: function(result) {
