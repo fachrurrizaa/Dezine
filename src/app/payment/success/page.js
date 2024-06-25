@@ -9,7 +9,7 @@ export default function page() {
     useEffect(()=>{
         setTimeout(()=>{
             router.push('/')
-        },5000)
+        },3000)
     },[])
 
     return (
