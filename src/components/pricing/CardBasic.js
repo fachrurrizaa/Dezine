@@ -15,11 +15,7 @@ export default function CardBasic() {
             router.push('/login');
         } else {
             try {
-                // Log the session data for debugging
-                console.log('Session data:', session);
-                
                 const userId = session?.user?.id;
-                console.log('User ID:', userId);
                 
                 if (!userId) {
                     console.error('User ID not found in session');
@@ -32,14 +28,14 @@ export default function CardBasic() {
                     price: 200000
                 });
 
-                // Log the response for debugging
-                console.log('Response from /api/subscribe:', response.data);
-
                 if (response.data && response.data.token) {
                     window.snap.pay(response.data.token, {
-                        onSuccess: function(result) {
-                            console.log('Success:', result);
-                            // Handle success transaction here
+                        onSuccess: async function(result) {
+                            try {
+                                await axios.post('/api/notification', result);
+                            } catch (error) {
+                                console.error('Error sending notification', error);
+                            }
                         },
                         onPending: function(result) {
                             console.log('Pending:', result);

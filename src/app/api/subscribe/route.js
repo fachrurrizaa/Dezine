@@ -26,7 +26,7 @@ export async function POST(req) {
 
         let transactionParams = {
             transaction_details: {
-                order_id: `order-${Math.floor(1000000 + Math.random() * 9000000)}`,
+                order_id: `order-${userId}-${Math.floor(1000000 + Math.random() * 9000000)}`,
                 gross_amount: price
             },
             customer_details: {

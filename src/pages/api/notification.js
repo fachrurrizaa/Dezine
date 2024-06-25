@@ -1,5 +1,5 @@
-import mongooseConnect from '../../../../lib/mongoose';
-import { User } from '../../../../models/User';
+import mongooseConnect from '../../../lib/mongoose';
+import { User } from '../../../models/User';
 import midtransClient from 'midtrans-client';
 
 export default async function handler(req, res) {
@@ -15,21 +15,23 @@ export default async function handler(req, res) {
         try {
             const notificationJson = req.body;
             const statusResponse = await apiClient.transaction.notification(notificationJson);
+
             const orderId = statusResponse.order_id;
             const transactionStatus = statusResponse.transaction_status;
             const fraudStatus = statusResponse.fraud_status;
 
-            if (transactionStatus == 'capture') {
-                if (fraudStatus == 'accept') {
-                    // Update subscription status
-                    await User.findOneAndUpdate({ email: statusResponse.order_id }, { subscriptions: true });
-                }
-            } else if (transactionStatus == 'settlement') {
+            // Extract the user ID from the order_id
+            const userId = orderId.split('-')[1];
+
+            if (transactionStatus === 'capture' && fraudStatus === 'accept') {
                 // Update subscription status
-                await User.findOneAndUpdate({ email: statusResponse.order_id }, { subscriptions: true });
-            } else if (transactionStatus == 'cancel' || transactionStatus == 'deny' || transactionStatus == 'expire') {
+                await User.findByIdAndUpdate(userId, { subscriptions: true });
+            } else if (transactionStatus === 'settlement') {
+                // Update subscription status
+                await User.findByIdAndUpdate(userId, { subscriptions: true });
+            } else if (transactionStatus === 'cancel' || transactionStatus === 'deny' || transactionStatus === 'expire') {
                 // Handle failed transaction
-            } else if (transactionStatus == 'pending') {
+            } else if (transactionStatus === 'pending') {
                 // Handle pending transaction
             }
 
