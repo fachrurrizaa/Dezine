@@ -2,7 +2,7 @@ import { MongoDBAdapter } from '@auth/mongodb-adapter';
 import NextAuth from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import clientPromise from './../../../../../lib/mongodb';
+import clientPromise from '../../../../../lib/mongodb';
 import mongooseConnect from '../../../../../lib/mongoose';
 import { User } from '../../../../../models/User';
 import { compare } from 'bcrypt';
@@ -47,30 +47,25 @@ export const authOptions = {
     signIn: '/login',
   },
   callbacks: {
-    async jwt({ token, account, profile }) {
-      if (account && profile) {
-        token.accessToken = account.access_token;
-
+    async jwt({ token, user, account, profile }) {
+      if (user) {
+        token.id = user.id;
+      } else if (account && profile) {
         try {
           await mongooseConnect();
           const updateData = {
             email: profile.email,
             name: profile.name,
             image: profile.picture,
-            subscriptions: false, // Ensure default value is set
-            googleProvider: true // Indicate that this user was created via Google
+            subscriptions: false,
+            googleProvider: true
           };
 
-          console.log('Updating/Creating user with data:', updateData);
-
-          // Update the user if exists, otherwise create a new user
           const user = await User.findOneAndUpdate(
             { email: profile.email },
             { $set: updateData },
             { new: true, upsert: true, setDefaultsOnInsert: true }
           );
-
-          console.log('User after update/create:', user);
 
           token.id = user._id;
         } catch (error) {
@@ -82,7 +77,7 @@ export const authOptions = {
     },
     async session({ session, token }) {
       session.accessToken = token.accessToken;
-      session.user._id = token.id;
+      session.user.id = token.id;
       return session;
     }
   },

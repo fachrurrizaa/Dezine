@@ -15,24 +15,11 @@ export default function CardBasic() {
             router.push('/login');
         } else {
             try {
-                // Log the session data for debugging
-                console.log('Session data:', session);
-                
-                const userId = session?.user?._id;
-                
-                if (!userId) {
-                    console.error('User ID not found in session');
-                    return;
-                }
-                
                 const response = await axios.post('/api/subscribe', { 
                     name: "Basic Plan",
-                    userId: userId,
+                    userId: session?.user?.id,
                     price: 200000
                 });
-
-                // Log the response for debugging
-                console.log('Response from /api/subscribe:', response.data);
 
                 if (response.data && response.data.token) {
                     window.snap.pay(response.data.token, {
