@@ -15,9 +15,20 @@ export default function CardGold() {
             router.push('/login');
         } else {
             try {
+                // Log the session data for debugging
+                console.log('Session data:', session);
+                
+                const userId = session?.user?.id;
+                console.log('User ID:', userId);
+                
+                if (!userId) {
+                    console.error('User ID not found in session');
+                    return;
+                }
+
                 const response = await axios.post('/api/subscribe', { 
                     name: "Gold Plan",
-                    userId: session?.user?.id,
+                    userId: userId,
                     price: 500000
                 });
 
