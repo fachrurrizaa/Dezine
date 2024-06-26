@@ -1,5 +1,7 @@
+// route.js
 import mongooseConnect from '../../../../lib/mongoose';
 import { User } from '../../../../models/User';
+import { Transaction } from '../../../../models/Transaction';
 import midtransClient from 'midtrans-client';
 
 export async function POST(req) {
@@ -24,9 +26,11 @@ export async function POST(req) {
             clientKey: process.env.MIDTRANS_CLIENT_KEY
         });
 
+        let orderId = `order-${userId}-${Math.floor(1000000 + Math.random() * 9000000)}`;
+
         let transactionParams = {
             transaction_details: {
-                order_id: `order-${userId}-${Math.floor(1000000 + Math.random() * 9000000)}`,
+                order_id: orderId,
                 gross_amount: price
             },
             customer_details: {
@@ -42,6 +46,19 @@ export async function POST(req) {
         };
 
         const transaction = await snap.createTransaction(transactionParams);
+
+        // Save transaction history
+        const newTransaction = new Transaction({
+            date: new Date(),
+            orderId: orderId,
+            transactionType: 'Payment',
+            channel: 'Bank Transfer',
+            status: 'Pending', // This will be updated later based on Midtrans notification
+            amount: price,
+            customerEmail: user.email
+        });
+
+        await newTransaction.save();
 
         return new Response(JSON.stringify({ token: transaction.token }), { status: 200 });
     } catch (error) {

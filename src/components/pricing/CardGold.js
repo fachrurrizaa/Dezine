@@ -32,7 +32,7 @@ export default function CardGold() {
                     window.snap.pay(response.data.token, {
                         onSuccess: async function(result) {
                             try {
-                                await axios.post('/api/notification', result);
+                                await axios.post('/api/notification', { ...result, status: 'settlement' });
                             } catch (error) {
                                 console.error('Error sending notification', error);
                             }
@@ -41,13 +41,21 @@ export default function CardGold() {
                             console.log('Pending:', result);
                             // Handle pending transaction here
                         },
-                        onError: function(result) {
+                        onError: async function(result) {
                             console.log('Error:', result);
-                            // Handle error in transaction here
+                            try {
+                                await axios.post('/api/notification', { ...result, status: 'failed' });
+                            } catch (error) {
+                                console.error('Error sending notification', error);
+                            }
                         },
-                        onClose: function() {
+                        onClose: async function() {
                             console.log('Customer closed the popup without finishing the payment');
-                            // Handle popup close event here
+                            try {
+                                await axios.post('/api/notification', { order_id: response.data.token, status: 'cancelled' });
+                            } catch (error) {
+                                console.error('Error sending notification', error);
+                            }
                         }
                     });
                 }
