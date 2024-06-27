@@ -5,7 +5,7 @@ import Fortune from "../../../public/assets/fortune.svg";
 import Documentation from "../../../public/assets/documentation.svg";
 import Navbar from "@/components/navbar/Navbar";
 import Feature from '@/components/Feature';
-import Card from "@/components/pricing/Cardd";
+import Card from "@/components/pricing/Card";
 import { useEffect } from "react";
 
 export default function page() {
