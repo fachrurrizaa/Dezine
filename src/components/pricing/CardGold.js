@@ -15,7 +15,7 @@ export default function CardGold() {
             router.push('/login');
         } else {
             try {
-                const userId = session?.user?.id;
+                const userId = session?.user?._id;
                 
                 if (!userId) {
                     console.error('User ID not found in session');
