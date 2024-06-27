@@ -2,7 +2,7 @@ import { MongoDBAdapter } from '@auth/mongodb-adapter';
 import NextAuth from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import clientPromise from '../../../../../lib/mongodb';
+import clientPromise from './../../../../../lib/mongodb';
 import mongooseConnect from '../../../../../lib/mongoose';
 import { User } from '../../../../../models/User';
 import { compare } from 'bcrypt';
@@ -12,6 +12,7 @@ export const authOptions = {
     GoogleProvider({
       clientId: process.env.GOOGLE_ID,
       clientSecret: process.env.GOOGLE_SECRET,
+      allowDangerousEmailAccountLinking: true,
       checks: ['none']
     }),
     CredentialsProvider({
@@ -47,37 +48,57 @@ export const authOptions = {
     signIn: '/login',
   },
   callbacks: {
-    async jwt({ token, user, account, profile }) {
-      if (user) {
-        token.id = user.id;
-      } else if (account && profile) {
+    async jwt({ token, account, profile, user }) {
+      if (account && profile) {
+        token.accessToken = account.access_token;
+
         try {
           await mongooseConnect();
+          // Cari pengguna di database berdasarkan email
+          const existingUser = await User.findOne({ email: profile.email });
+
           const updateData = {
             email: profile.email,
             name: profile.name,
             image: profile.picture,
-            subscriptions: false,
-            googleProvider: true
+            googleProvider: true // Indicate that this user was created via Google
           };
 
-          const user = await User.findOneAndUpdate(
+          if (!existingUser) {
+            updateData.subscriptions = false; // Set default value for new user
+          } else {
+            // Gabungkan data dari pengguna yang ada
+            updateData.subscriptions = existingUser.subscriptions;
+            updateData.googleProvider = existingUser.googleProvider || true;
+          }
+
+          console.log('Updating/Creating user with data:', updateData);
+
+          // Update the user if exists, otherwise create a new user
+          const dbUser = await User.findOneAndUpdate(
             { email: profile.email },
             { $set: updateData },
             { new: true, upsert: true, setDefaultsOnInsert: true }
           );
 
-          token.id = user._id;
+          console.log('User after update/create:', dbUser);
+
+          token.id = dbUser._id;
+          token.subscriptions = dbUser.subscriptions;
         } catch (error) {
           console.error('Error in JWT callback:', error);
           throw new Error("Server error");
         }
+      } else if (user) {
+        token.id = user._id;
+        token.subscriptions = user.subscriptions; // Add subscriptions to the token for manual login
       }
       return token;
     },
     async session({ session, token }) {
       session.accessToken = token.accessToken;
-      session.user.id = token.id;
+      session.user._id = token.id;
+      session.user.subscriptions = token.subscriptions;
       return session;
     }
   },
