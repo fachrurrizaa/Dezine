@@ -25,7 +25,7 @@ export default function Navbar() {
             <Link href="/pricing">Pricing</Link>
           </li>
           <li className="font-medium text-base text-[#004f4f] inline-block py-0 px-5 transition-all ease-in-out cursor-pointer hover:font-bold">
-            Study Case
+            <Link href="/study-case">Study Case</Link>
           </li>
         </ul>
       </nav>
