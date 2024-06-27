@@ -72,16 +72,12 @@ export const authOptions = {
             updateData.googleProvider = existingUser.googleProvider || true;
           }
 
-          console.log('Updating/Creating user with data:', updateData);
-
           // Update the user if exists, otherwise create a new user
           const dbUser = await User.findOneAndUpdate(
             { email: profile.email },
             { $set: updateData },
             { new: true, upsert: true, setDefaultsOnInsert: true }
           );
-
-          console.log('User after update/create:', dbUser);
 
           token.id = dbUser._id;
           token.subscriptions = dbUser.subscriptions;
@@ -98,7 +94,16 @@ export const authOptions = {
     async session({ session, token }) {
       session.accessToken = token.accessToken;
       session.user._id = token.id;
-      session.user.subscriptions = token.subscriptions;
+
+      try {
+        await mongooseConnect();
+        const dbUser = await User.findById(token.id);
+        session.user.subscriptions = dbUser.subscriptions; // Update session with the latest subscription status
+      } catch (error) {
+        console.error('Error in session callback:', error);
+        session.user.subscriptions = token.subscriptions; // Fallback to token subscription status
+      }
+      
       return session;
     }
   },

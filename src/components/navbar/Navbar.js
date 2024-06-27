@@ -51,24 +51,24 @@ export default function Navbar() {
                 </div>
                 <ul
                   tabIndex={0}
-                  className="mt-3 z-[1] p-6 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-auto"
+                  className="mt-3 z-[1] p-6 gap-1 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-auto"
                 >
-                  <li className="flex flex-row justify-between items-center">
-                    <a>
-                      <p className="text-bold-600">{session?.user?.name}</p>
+                  <li>
+                    <a className="p-0">
+                      <p className="text-bold-600 p-2">{session?.user?.name}</p>
                     </a>
                   </li>
-                  <li className="flex flex-row justify-between items-center">
-                    <a>
-                      <p>{session?.user?.email}</p>
+                  <li>
+                    <a className="p-0 pr-1">
+                      <p className="text-bold-600 p-2">{session?.user?.email}</p>
                       <span
-                        className={`badge ml-2 ${
+                        className={`badge ml-2 h-6 ${
                           session?.user?.subscriptions
                             ? "bg-yellow-500 text-white"
                             : "bg-gray-400 text-white"
                         }`}
                       >
-                        Premium
+                        {session?.user?.subscriptions ? "Premium" : "Free"}
                       </span>
                     </a>
                   </li>

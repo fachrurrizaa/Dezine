@@ -16,7 +16,6 @@ export default async function handler(req, res) {
         try {
             const notificationJson = req.body;
             const statusResponse = await apiClient.transaction.notification(notificationJson);
-            console.log('statusResponse', statusResponse);
 
             const orderId = statusResponse.order_id;
             const transactionStatus = req.body.status || statusResponse.transaction_status;
@@ -26,24 +25,26 @@ export default async function handler(req, res) {
             // Extract the user ID from the order_id
             const userId = orderId.split('-')[1];
 
+            const updateData = { status: transactionStatus, channel: paymentType };
+
             if (transactionStatus === 'capture' && fraudStatus === 'accept') {
                 // Update subscription status
                 await User.findByIdAndUpdate(userId, { subscriptions: true });
-                await Transaction.updateOne({ orderId }, { status: 'success', channel: paymentType });
+                updateData.status = 'success';
             } else if (transactionStatus === 'settlement') {
                 // Update subscription status
                 await User.findByIdAndUpdate(userId, { subscriptions: true });
-                await Transaction.updateOne({ orderId }, { status: 'success', channel: paymentType });
+                updateData.status = 'success';
             } else if (transactionStatus === 'cancel' || transactionStatus === 'deny' || transactionStatus === 'expire' || transactionStatus === 'failed') {
                 // Handle failed transaction
-                await Transaction.updateOne({ orderId }, { status: 'failed', channel: paymentType });
+                updateData.status = 'failed';
             } else if (transactionStatus === 'pending') {
                 // Handle pending transaction
-                await Transaction.updateOne({ orderId }, { status: 'pending', channel: paymentType });
+                updateData.status = 'pending';
             }
 
             // Update transaction record
-            await Transaction.updateOne({ orderId }, { status: transactionStatus, channel: paymentType });
+            await Transaction.updateOne({ orderId }, updateData, { upsert: true });
 
             res.status(200).send('OK');
         } catch (error) {

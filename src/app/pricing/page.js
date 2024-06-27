@@ -1,11 +1,11 @@
+// pricing.js
 'use client'
 import Costumize from "../../../public/assets/costumize.svg";
 import Fortune from "../../../public/assets/fortune.svg";
 import Documentation from "../../../public/assets/documentation.svg";
 import Navbar from "@/components/navbar/Navbar";
 import Feature from '@/components/Feature';
-import CardBasic from "@/components/pricing/CardBasic";
-import CardGold from "@/components/pricing/CardGold";
+import Card from "@/components/pricing/Cardd";
 import { useEffect } from "react";
 
 export default function page() {
@@ -23,6 +23,23 @@ export default function page() {
           document.body.removeChild(script)
         }
       }, [])
+      
+    const basicPlanFeatures = [
+        "Customizable layers",
+        "Official documentation",
+        "SVG icons",
+        "SVG illustrations",
+        "Pre-built design screen"
+    ];
+
+    const goldPlanFeatures = [
+        ...basicPlanFeatures,
+        "Coded template",
+        "Support 24/7",
+        "Private designer group",
+        "Unlock cloning app"
+    ];
+
     return (
         <>
             <Navbar />
@@ -32,13 +49,13 @@ export default function page() {
                     <p className="font-normal text-xl text-[#6B7193] text-center">Working faster and better than before</p>
                 </div>
                 <div className="flex mb-24 mt-16 gap-20 mr-32">
-                    <CardBasic/>
-                    <CardGold/>
+                    <Card planName="Basic" price={"200,000"} pricePlan={200000} features={basicPlanFeatures} height={"h-[502px]"} />
+                    <Card planName="Gold" price={"500,000"} pricePlan={500000} features={goldPlanFeatures} height={"h-[662px]"} />
                 </div>
                 <div className="flex gap-32">
-                    <Feature src={ Costumize } content={"Costumizable"}/>
-                    <Feature src={ Fortune } content={"500 Fortune"}/>
-                    <Feature src={ Documentation } content={"Documentation"}/>
+                    <Feature src={Costumize} content={"Costumizable"}/>
+                    <Feature src={Fortune} content={"500 Fortune"}/>
+                    <Feature src={Documentation} content={"Documentation"}/>
                 </div>
             </div>
         </>
