@@ -10,7 +10,7 @@ const nextConfig = {
       {
         // Semua permintaan /api kecuali /api/auth, /api/contact, dan /api/user
         source: '/api/:path((?!auth|user|contact|subscribe|notification).*)', 
-        destination: 'https://backend-dezine.vercel.app/api/:path*',
+        destination: 'https://dezine-admin.vercel.app/api/:path*',
       },
     ];
   },
