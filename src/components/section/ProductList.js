@@ -1,19 +1,20 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import ProductItem from './ProductItem';
 import { Context } from '@/components/context/MyContext';
 
 export default function ProductList() {
-    const { posts, setPosts } = useContext(Context);
+    const { posts } = useContext(Context);
+    const [filteredPosts, setFilteredPosts] = useState([]);
 
     useEffect(() => {
         if (posts.length > 3) {
-            setPosts(posts.slice(-3));
+            setFilteredPosts(posts.slice(-3));
         }
-    }, [posts, setPosts]);
+    }, [posts]);
 
     return (
         <div className="flex justify-around">
-            {posts.map((post) => (
+            {filteredPosts.map((post) => (
                 <ProductItem
                     key={post._id}
                     id={post._id}
